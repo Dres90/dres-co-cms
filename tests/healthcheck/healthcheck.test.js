@@ -12,7 +12,3 @@ afterAll(async () => {
 it("strapi is defined", () => {
   expect(strapi).toBeDefined();
 });
-
-it("should be true", () => {
-    expect(true).toBe(true);
-})
