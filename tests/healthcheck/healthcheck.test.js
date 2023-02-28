@@ -13,6 +13,6 @@ it("strapi is defined", () => {
   expect(strapi).toBeDefined();
 });
 
-it("sample test", () => {
+it("should be true", () => {
     expect(true).toBe(true);
 })
