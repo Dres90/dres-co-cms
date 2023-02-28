@@ -1,4 +1,14 @@
+const fs = require('fs');
+const { setupStrapi, cleanupStrapi } = require("../helpers/strapi");
 const request = require('supertest');
+
+beforeAll(async () => {
+  await setupStrapi();
+});
+
+afterAll(async () => {
+  await cleanupStrapi();
+});
 
 // user mock data
 const mockUserData = {

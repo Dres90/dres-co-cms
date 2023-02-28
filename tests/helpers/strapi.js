@@ -1,3 +1,4 @@
+/* istanbul ignore file */
 const Strapi = require("@strapi/strapi");
 const fs = require("fs");
 
