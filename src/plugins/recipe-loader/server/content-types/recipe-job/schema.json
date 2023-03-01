@@ -1,0 +1,34 @@
+{
+  "kind": "collectionType",
+  "collectionName": "recipe_jobs",
+  "info": {
+    "singularName": "recipe-job",
+    "pluralName": "recipe-jobs",
+    "displayName": "Recipe Job"
+  },
+  "options": {
+    "draftAndPublish": false,
+    "comment": ""
+  },
+  "attributes": {
+    "Date": {
+      "type": "datetime"
+    },
+    "URL": {
+      "type": "string"
+    },
+    "Success": {
+      "type": "boolean",
+      "default": false
+    },
+    "Updated": {
+      "type": "integer"
+    },
+    "New": {
+      "type": "integer"
+    },
+    "Log": {
+      "type": "text"
+    }
+  }
+}
