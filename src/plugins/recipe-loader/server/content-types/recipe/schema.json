@@ -12,7 +12,7 @@
   "pluginOptions": {},
   "attributes": {
     "externalId": {
-      "type": "uid"
+      "type": "string"
     }
   }
 }
