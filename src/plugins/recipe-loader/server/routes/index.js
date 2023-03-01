@@ -1,6 +1,6 @@
 'use strict';
 
-const recipeRoutes = require('./recipe-routes');
-// const buildRoutes = require('./build-routes');
+const recipe = require('./recipe')
+const recipeJob = require('./recipe-job')
 
-module.exports = [...recipeRoutes];
+module.exports = [...recipe, ...recipeJob];

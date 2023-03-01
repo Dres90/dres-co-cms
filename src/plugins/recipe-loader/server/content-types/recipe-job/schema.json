@@ -13,22 +13,6 @@
   "attributes": {
     "Date": {
       "type": "datetime"
-    },
-    "URL": {
-      "type": "string"
-    },
-    "Success": {
-      "type": "boolean",
-      "default": false
-    },
-    "Updated": {
-      "type": "integer"
-    },
-    "New": {
-      "type": "integer"
-    },
-    "Log": {
-      "type": "text"
     }
   }
 }

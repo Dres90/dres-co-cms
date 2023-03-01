@@ -7,11 +7,11 @@
     "displayName": "Recipe"
   },
   "options": {
-    "draftAndPublish": true
+    "draftAndPublish": false,
+    "comment": ""
   },
-  "pluginOptions": {},
   "attributes": {
-    "externalId": {
+    "Name": {
       "type": "string"
     }
   }

@@ -1,9 +1,9 @@
 'use strict';
 
-const recipeJob = require('./recipe-job')
-const recipe = require('./recipe')
+const recipe = require('./recipe');
+const recipeJob = require('./recipe-job');
 
 module.exports = {
-    "recipe-job": recipeJob,
-    "recipe": recipe
+  recipe,
+  "recipe-job": recipeJob
 };
