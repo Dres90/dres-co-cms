@@ -1,7 +1,9 @@
 'use strict';
 
-const myController = require('./my-controller');
+const recipeController = require('./recipe-controller');
+// const buildController = require('./build-controller');
 
 module.exports = {
-  myController,
+	recipeController,
+	// buildController,
 };
