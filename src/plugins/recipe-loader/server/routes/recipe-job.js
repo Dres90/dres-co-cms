@@ -16,7 +16,7 @@ module.exports = [
 	{
 		method: 'POST',
 		path: '/recipe-jobs',
-		handler: 'recipeJobController.create',
+		handler: 'recipeJobController.run',
         config: {
             policies: [],
             auth: false,

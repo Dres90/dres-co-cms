@@ -6,4 +6,8 @@
 
 const { createCoreService } = require('@strapi/strapi').factories;
 
-module.exports = createCoreService('plugin::recipe-loader.recipe-job');
+module.exports = createCoreService('plugin::recipe-loader.recipe-job', {
+    async getRecipes() {
+        return "loading recipes";
+    }
+});
