@@ -120,6 +120,13 @@ module.exports = createCoreService('plugin::recipe-loader.recipe-job', {
                 data: cleanRecipe(recipe),
             });
         })
+        await strapi.entityService.create('plugin::recipe-loader.recipe-job', {
+            data: {
+                date: new Date(),
+                success: recipes.length > 0,
+                log
+            },
+        });
         return { status: 200, recipes: recipes }
     }
 });

@@ -11,8 +11,14 @@
     "comment": ""
   },
   "attributes": {
-    "Date": {
+    "date": {
       "type": "datetime"
+    },
+    "log": {
+      "type": "text"
+    },
+    "success": {
+      "type": "boolean"
     }
   }
 }
