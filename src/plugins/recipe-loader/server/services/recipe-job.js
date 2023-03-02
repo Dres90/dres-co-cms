@@ -7,6 +7,26 @@ const axios = require('axios').default;
 
 const { createCoreService } = require('@strapi/strapi').factories;
 
+// Cannot use since login requests can be blocked from cloudflare
+const getToken = async (username, password) => {
+    let token = null;
+    const params = { country: 'FR', locale: 'fr-FR'};
+    const requestConfig = { 
+        method: 'POST', 
+        url: 'https://www.hellofresh.fr/gw/login', 
+        params,
+        data: { username, password }
+    };
+    try {
+        const response = await axios(requestConfig);
+        token = response?.data?.access_token; 
+    }
+    catch (error) {
+        console.error(error);
+    }
+    return token;
+}
+
 module.exports = createCoreService('plugin::recipe-loader.recipe-job', {
     async getRecipes() {
         let recipes = [];
@@ -14,10 +34,11 @@ module.exports = createCoreService('plugin::recipe-loader.recipe-job', {
         let skip = 0;
         let take = 3; // Set to 250 when ready to launch
         let total = Infinity;
+        let token = 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJibG9ja2VkIjpmYWxzZSwiY291bnRyeSI6ImZyIiwiZW1haWwiOiJhZ3VpbGFyLmNocmlzdGluYUBpY2xvdWQuY29tIiwiZXhwIjoxNjc3NzYzMzQ0LCJpYXQiOjE2Nzc3NjE1NDQsImlkIjoiNGEwZDJhOTItODZiYi00ZTJjLTliN2EtNzgyYWMyMTNmNzgxIiwiaXNzIjoiYTM1MDI5MzYtMWE2MS00NWQ5LWE4OGQtMThjYTA1NGM0NGRjIiwianRpIjoiMDA5ZWExZWQtNmE4OC00ZGE2LTljZmEtMDFkMGE5ODFlZTc4IiwibWV0YWRhdGEiOnsibmFtZSI6IkFHVUlMQVIgQ2hyaXN0aW5hIiwicGFzc3dvcmRsZXNzIjpmYWxzZX0sInJvbGVzIjpbXSwic2NvcGUiOiIiLCJzdWIiOiI0YTBkMmE5Mi04NmJiLTRlMmMtOWI3YS03ODJhYzIxM2Y3ODEiLCJ1c2VybmFtZSI6ImFndWlsYXIuY2hyaXN0aW5hQGljbG91ZC5jb20ifQ.JZo8nTu2vX82JvLfOeL7AS7_W0BpLFsFg4zgmEL0Yhk';
+        if (!token) return recipes;
+
         const getRecipesJson = async () => {
-            console.log(skip, take, total);
             const params = { country: 'FR', locale: 'fr-FR', product: 'classic-box', skip, take};
-            const token = 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJibG9ja2VkIjpmYWxzZSwiY291bnRyeSI6ImZyIiwiZW1haWwiOiJhZ3VpbGFyLmNocmlzdGluYUBpY2xvdWQuY29tIiwiZXhwIjoxNjc3NjkxNjQ5LCJpYXQiOjE2Nzc2ODk4NDksImlkIjoiNGEwZDJhOTItODZiYi00ZTJjLTliN2EtNzgyYWMyMTNmNzgxIiwiaXNzIjoiYTM1MDI5MzYtMWE2MS00NWQ5LWE4OGQtMThjYTA1NGM0NGRjIiwianRpIjoiN2FmYzRmYTgtZTVhZi00ZmI0LTlhM2MtZGQyZmU3MzdmMTMyIiwibWV0YWRhdGEiOnsibmFtZSI6IkFHVUlMQVIgQ2hyaXN0aW5hIiwicGFzc3dvcmRsZXNzIjpmYWxzZX0sInJvbGVzIjpbXSwic2NvcGUiOiIiLCJzdWIiOiI0YTBkMmE5Mi04NmJiLTRlMmMtOWI3YS03ODJhYzIxM2Y3ODEiLCJ1c2VybmFtZSI6ImFndWlsYXIuY2hyaXN0aW5hQGljbG91ZC5jb20ifQ.bu2nJvQAmwGCzqGdIxZt4qWtcGu7Ni4fqi2jl6bBMvg';
             const headers = { authorization: token }
             const requestConfig = { 
                 method: 'GET', 
@@ -28,7 +49,6 @@ module.exports = createCoreService('plugin::recipe-loader.recipe-job', {
             try {
                 const response = await axios(requestConfig);
                 if (response.data.items) {
-                    console.log('got here', response.data.items.length)
                     recipes = recipes.concat(response.data.items);
                 }
                 total = response.data.total;
