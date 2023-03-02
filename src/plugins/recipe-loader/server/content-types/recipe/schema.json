@@ -11,8 +11,16 @@
     "comment": ""
   },
   "attributes": {
-    "Name": {
+    "name": {
       "type": "string"
+    },
+    "external_id": {
+      "type": "string"
+    },
+    "recipe_category": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "plugin::recipe-loader.recipe-category"
     }
   }
 }

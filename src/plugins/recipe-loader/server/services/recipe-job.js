@@ -27,6 +27,38 @@ const getToken = async (username, password) => {
     return token;
 }
 
+const getCategory = async (data, categories) => {
+    if (!data) return null;
+    const { id } = data;
+    if (categories.has(id))
+        return categories.get(id);
+    let category = await strapi.db.query('plugin::recipe-loader.recipe-category').findOne({
+        select: ['id'],
+        where: { external_id: id }
+    });
+    if (category) {
+        categories.set(id, category.id);
+        return category.id;
+    }
+    category = await strapi.entityService.create('plugin::recipe-loader.recipe-category', {
+        data: {
+            name: data.name,
+            external_id: id
+        }
+    });
+    categories.set(id, category.id);
+    return category.id;
+}
+
+const cleanRecipe = (recipe) => {
+    const { id, name } = recipe;
+    return {
+        name,
+        external_id: id,
+        recipe_category: recipe.category
+    }
+}
+
 module.exports = createCoreService('plugin::recipe-loader.recipe-job', {
     async getRecipes() {
         let recipes = [];
@@ -34,7 +66,7 @@ module.exports = createCoreService('plugin::recipe-loader.recipe-job', {
         let skip = 0;
         let take = 3; // Set to 250 when ready to launch
         let total = Infinity;
-        let token = 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJibG9ja2VkIjpmYWxzZSwiY291bnRyeSI6ImZyIiwiZW1haWwiOiJhZ3VpbGFyLmNocmlzdGluYUBpY2xvdWQuY29tIiwiZXhwIjoxNjc3NzYzMzQ0LCJpYXQiOjE2Nzc3NjE1NDQsImlkIjoiNGEwZDJhOTItODZiYi00ZTJjLTliN2EtNzgyYWMyMTNmNzgxIiwiaXNzIjoiYTM1MDI5MzYtMWE2MS00NWQ5LWE4OGQtMThjYTA1NGM0NGRjIiwianRpIjoiMDA5ZWExZWQtNmE4OC00ZGE2LTljZmEtMDFkMGE5ODFlZTc4IiwibWV0YWRhdGEiOnsibmFtZSI6IkFHVUlMQVIgQ2hyaXN0aW5hIiwicGFzc3dvcmRsZXNzIjpmYWxzZX0sInJvbGVzIjpbXSwic2NvcGUiOiIiLCJzdWIiOiI0YTBkMmE5Mi04NmJiLTRlMmMtOWI3YS03ODJhYzIxM2Y3ODEiLCJ1c2VybmFtZSI6ImFndWlsYXIuY2hyaXN0aW5hQGljbG91ZC5jb20ifQ.JZo8nTu2vX82JvLfOeL7AS7_W0BpLFsFg4zgmEL0Yhk';
+        let token = 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJibG9ja2VkIjpmYWxzZSwiY291bnRyeSI6ImZyIiwiZW1haWwiOiJhZ3VpbGFyLmNocmlzdGluYUBpY2xvdWQuY29tIiwiZXhwIjoxNjc3NzcxNTU2LCJpYXQiOjE2Nzc3Njk3NTYsImlkIjoiNGEwZDJhOTItODZiYi00ZTJjLTliN2EtNzgyYWMyMTNmNzgxIiwiaXNzIjoiYTM1MDI5MzYtMWE2MS00NWQ5LWE4OGQtMThjYTA1NGM0NGRjIiwianRpIjoiYTU1ZTA1NjctZTg3NC00OGMxLWI1MzMtNzcxMTliMGViYjE3IiwibWV0YWRhdGEiOnsibmFtZSI6IkFHVUlMQVIgQ2hyaXN0aW5hIiwicGFzc3dvcmRsZXNzIjpmYWxzZX0sInJvbGVzIjpbXSwic2NvcGUiOiIiLCJzdWIiOiI0YTBkMmE5Mi04NmJiLTRlMmMtOWI3YS03ODJhYzIxM2Y3ODEiLCJ1c2VybmFtZSI6ImFndWlsYXIuY2hyaXN0aW5hQGljbG91ZC5jb20ifQ.RxpEGtZDG53CUkZnAazE4YEP3vNCd-ayjUdFgpWCxUc';
         if (!token) return recipes;
 
         const getRecipesJson = async () => {
@@ -70,6 +102,24 @@ module.exports = createCoreService('plugin::recipe-loader.recipe-job', {
 
         // Now write recipes to db, if recipe exist overwrite
 
-        return { status: 200, recipes: recipes.length }
+        let categories = new Map();
+
+        recipes.forEach(async recipe => {
+            recipe.category = await getCategory(recipe.category, categories);
+            const existingRecipe = await strapi.db.query('plugin::recipe-loader.recipe').findOne({
+                select: ['id'],
+                where: { external_id: recipe.id }
+            });
+            if (existingRecipe) {
+                await strapi.entityService.update('plugin::recipe-loader.recipe', existingRecipe.id, {
+                    data: cleanRecipe(recipe)
+                });
+                return;
+            }
+            await strapi.entityService.create('plugin::recipe-loader.recipe', {
+                data: cleanRecipe(recipe),
+            });
+        })
+        return { status: 200, recipes: recipes }
     }
 });

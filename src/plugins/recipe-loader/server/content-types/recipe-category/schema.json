@@ -1,0 +1,21 @@
+{
+  "kind": "collectionType",
+  "collectionName": "recipe_categories",
+  "info": {
+    "singularName": "recipe-category",
+    "pluralName": "recipe-categories",
+    "displayName": "Recipe Category"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "name": {
+      "type": "string"
+    },
+    "external_id": {
+      "type": "string"
+    }
+  }
+}
