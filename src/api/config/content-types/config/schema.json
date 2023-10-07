@@ -4,18 +4,12 @@
   "info": {
     "singularName": "config",
     "pluralName": "configs",
-    "displayName": "Config"
+    "displayName": "Config",
+    "description": ""
   },
   "options": {
     "draftAndPublish": true
   },
   "pluginOptions": {},
-  "attributes": {
-    "RecipesToken": {
-      "type": "text"
-    },
-    "RecipesEndpoint": {
-      "type": "string"
-    }
-  }
+  "attributes": {}
 }
