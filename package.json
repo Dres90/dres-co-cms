@@ -16,9 +16,9 @@
     "supertest": "^6.3.3"
   },
   "dependencies": {
-    "@strapi/plugin-i18n": "4.6.1",
-    "@strapi/plugin-users-permissions": "4.6.1",
-    "@strapi/strapi": "4.6.1",
+    "@strapi/plugin-i18n": "^4.14.3",
+    "@strapi/plugin-users-permissions": "^4.14.3",
+    "@strapi/strapi": "^4.14.3",
     "better-sqlite3": "8.0.1",
     "pg": "^8.9.0",
     "pg-connection-string": "^2.5.0"
