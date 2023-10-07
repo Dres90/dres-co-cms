@@ -7,4 +7,9 @@ module.exports = () => ({
   apiToken: {
     salt: crypto.randomBytes(16).toString('base64'),
   },
+  transfer: {
+    token: {
+      salt: crypto.randomBytes(16).toString('base64'),
+    }
+  }
 });
